@@ -14,9 +14,9 @@ module ActiveRecord::Import::AbstractAdapter
       end
 
       sql2insert = base_sql + values.join( ',' ) + post_sql
-      insert( sql2insert, *args )
+      ids = select_values( sql2insert )
 
-      number_of_inserts
+      [number_of_inserts,ids]
     end
 
     def pre_sql_statements(options)
