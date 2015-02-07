@@ -197,7 +197,7 @@ class ActiveRecord::Base
         hash[parent.class.name][assoc.name]||=[]
 
         # changed_objects = parent.association(assoc.name).select {|a| a.new_record? || a.changed?}
-        changed_objects = parent.send(assoc.name).map{ |a| a.new_record? || a.changed? }
+        changed_objects = parent.send(assoc.name).select{ |a| a.new_record? || a.changed? }
         changed_objects.each do |child|
           child.send("#{assoc.foreign_key}=", parent.id)
         end
