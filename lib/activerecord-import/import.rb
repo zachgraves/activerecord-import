@@ -196,8 +196,6 @@ class ActiveRecord::Base
       parent.class.reflect_on_all_autosave_associations.each do |assoc|
         hash[parent.class.name][assoc.name]||=[]
 
-        parent = parent.class.find(parent.id)
-
         changed_objects = parent.association(assoc.name).select do |a|
           a.new_record? || a.changed?
         end
@@ -275,8 +273,9 @@ class ActiveRecord::Base
       end
       # if we have ids, then set the id on the models and mark the models as clean.
       unless models.nil?
-        return_obj.ids.each_with_index do |obj, index|
+        return_obj.ids.to_a.each_with_index do |obj, index|
           models[index].id = obj.to_i
+          models[index].instance_variable_set(:@new_record, false)
           models[index].instance_variable_get(:@changed_attributes).clear # mark the model as saved
         end
       end
